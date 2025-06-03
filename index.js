@@ -71,26 +71,26 @@ var checkSwarmReviewExists = async function(changeListNumber) {
 };
 
 var extractP4SwarmURLsFromMessage = async function(message) {
-    let findRegexPattern = /.*?CL#([0-9]+).*/;
-    let extractRegexPattern = /.*?CL#[0-9]+(.*)/;
+    let findRegexPattern = /.*?(CL|P4)[ ]*#([0-9]+).*/;
+    let extractRegexPattern = /.*?(CL|P4)[ ]*#[0-9]+(.*)/;
     swarmURLArray = [];
     while(true) {
         let matches = findRegexPattern.exec(message);
         if(matches === null || matches.length === 0)
             break;
-        let swarmURL = swarmURLPrefix + matches[1];
+        let swarmURL = swarmURLPrefix + matches[2];
         let checkPromiseArray = [];
         if(shouldCheckURLValid) {
             checkPromiseArray.push(checkURL(swarmURL));
         }
         if(shouldCheckSwarmExists) {
-            let changeListNumber = parseInt(matches[1], 10);
+            let changeListNumber = parseInt(matches[2], 10);
             checkPromiseArray.push(checkSwarmReviewExists(changeListNumber));
         }
         const checkPromiseResults = await Promise.all(checkPromiseArray);
         if(checkPromiseResults.every(result => result == true))
             swarmURLArray.push(swarmURL);
-        message = message.replace(extractRegexPattern, '$1');
+        message = message.replace(extractRegexPattern, '$2');
     }
     return swarmURLArray;
 };
