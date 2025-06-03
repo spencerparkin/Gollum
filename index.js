@@ -16,7 +16,7 @@ const ShareMethod = {
 };
 
 // These variables configure the behavior of the script.
-const useSocketMode = false; 
+const useSocketMode = true;
 const shouldCheckURLValid = true;
 const shouldCheckSwarmExists = false;
 const shareMethod = ShareMethod.POST_IN_THREAD;
